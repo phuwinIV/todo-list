@@ -1,14 +1,29 @@
 import React from 'react';
 import type { Todo } from '../utils/todoHelpers';
+import { useTodoContext } from '../hooks/useTodoContext';
 
 interface TodoItemProps {
     todo: Todo;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
-    const handleToggle = () => {};
+    const { updateTodo, deleteTodo } = useTodoContext();
 
-    const handleDelete = () => {};
+    const handleToggle = async () => {
+        try {
+            await updateTodo(todo.id, { completed: !todo.completed });
+        } catch (error) {
+            console.error('Failed to toggle todo:', error);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteTodo(todo.id);
+        } catch (error) {
+            console.error('Failed to delete todo:', error);
+        }
+    };
 
     return (
         <div
@@ -34,11 +49,11 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
                         onChange={handleToggle}
                         type="checkbox"
                         checked={todo.completed}
-                        readOnly
                         className="sr-only"
                     />
                     <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                        onClick={handleToggle}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 cursor-pointer ${
                             todo.completed
                                 ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-green-500'
                                 : 'border-blue-300 hover:border-blue-500 bg-white'

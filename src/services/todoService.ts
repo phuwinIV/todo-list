@@ -36,6 +36,31 @@ const api = {
         }
         return response.json();
     },
+
+    async updateTodo(id: number, updates: Partial<ApiTodo>): Promise<ApiTodo> {
+        const response = await fetch(`${API_BASE}/todos/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updates),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update todo');
+        }
+        return response.json();
+    },
+
+    async deleteTodo(id: number): Promise<void> {
+        const response = await fetch(`${API_BASE}/todos/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete todo');
+        }
+    },
 };
 
 export const todoApi = api;

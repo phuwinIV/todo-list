@@ -9,6 +9,8 @@ export interface TodoContextType {
     isLoading: boolean;
     error: string | null;
     addTodo: (text: string) => Promise<void>;
+    updateTodo: (id: number, updates: Partial<Todo>) => Promise<void>;
+    deleteTodo: (id: number) => Promise<void>;
 }
 
 export const TodoContext = createContext<TodoContextType | undefined>(
@@ -21,7 +23,7 @@ interface TodoProviderProps {
 
 export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     const queryClient = useQueryClient();
-    
+
     const {
         data: todos = [],
         isLoading,
@@ -44,8 +46,40 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         },
     });
 
+    const updateTodoMutation = useMutation({
+        mutationFn: ({ id, updates }: { id: number; updates: Partial<Todo> }) =>
+            todoApi.updateTodo(id, {
+                title: updates.text,
+                completed: updates.completed,
+            }),
+        onSuccess: (data, { id }) => {
+            queryClient.setQueryData(['todos'], (old: Todo[] = []) =>
+                old.map((todo) =>
+                    todo.id === id ? mapApiTodoToTodo(data) : todo
+                )
+            );
+        },
+    });
+
     const addTodo = async (text: string) => {
         await addTodoMutation.mutateAsync({ title: text });
+    };
+
+    const deleteTodoMutation = useMutation({
+        mutationFn: (id: number) => todoApi.deleteTodo(id),
+        onSuccess: (_, id) => {
+            queryClient.setQueryData(['todos'], (old: Todo[] = []) =>
+                old.filter(todo => todo.id !== id)
+            );
+        },
+    });
+
+    const updateTodo = async (id: number, updates: Partial<Todo>) => {
+        await updateTodoMutation.mutateAsync({ id, updates });
+    };
+
+    const deleteTodo = async (id: number) => {
+        await deleteTodoMutation.mutateAsync(id);
     };
 
     const value = {
@@ -53,6 +87,8 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         isLoading,
         error: error?.message || null,
         addTodo,
+        updateTodo,
+        deleteTodo,
     };
 
     return (
