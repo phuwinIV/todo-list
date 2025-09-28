@@ -1,6 +1,6 @@
 import React from 'react';
 import TodoList from '../components/TodoList';
-import { TodoProvider } from '../context/TodoContext';
+import { TodoProvider } from '../context/todoContext';
 
 const HomePage = () => {
     return (

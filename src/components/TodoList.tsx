@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTodoContext } from '../hooks/useTodoContext';
 import TodoItem from './TodoItem';
+import AddTodo from './AddTodo';
 
 const TodoList: React.FC = () => {
     const { todos, isLoading, error } = useTodoContext();
@@ -81,6 +82,9 @@ const TodoList: React.FC = () => {
 
     return (
         <div className="space-y-6">
+            {/* Add Todo Section */}
+            <AddTodo />
+            
             {/* Progress Section */}
             <div className="bg-gradient-to-r from-blue-50 to-white rounded-2xl p-6 border border-blue-100">
                 <div className="flex items-center justify-between mb-4">

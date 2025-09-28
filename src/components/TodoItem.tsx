@@ -6,6 +6,10 @@ interface TodoItemProps {
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
+    const handleToggle = () => {};
+
+    const handleDelete = () => {};
+
     return (
         <div
             className={`group relative overflow-hidden rounded-xl border-2 transition-all duration-300 ${
@@ -27,6 +31,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
                 {/* Custom Checkbox */}
                 <div className="relative mr-4">
                     <input
+                        onChange={handleToggle}
                         type="checkbox"
                         checked={todo.completed}
                         readOnly
@@ -68,6 +73,15 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
                     >
                         {todo.text}
                     </p>
+                </div>
+
+                <div>
+                    <div
+                        onClick={handleDelete}
+                        className="bg-white cursor-pointer"
+                    >
+                        <span className="text-red-500">delete</span>
+                    </div>
                 </div>
 
                 {/* ID Badge */}
