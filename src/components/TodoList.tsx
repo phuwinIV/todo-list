@@ -99,7 +99,7 @@ const TodoList: React.FC = () => {
                     <h3 className="text-lg font-semibold text-red-800 mb-2">
                         เกิดข้อผิดพลาด
                     </h3>
-                    <p className="text-red-600">{error}</p>
+                    <p className="text-red-600"> กรุณาทำรายการใหม่ </p>
                 </div>
             </div>
         );
@@ -232,9 +232,9 @@ const TodoList: React.FC = () => {
             </div>
 
             {/* Stats Footer */}
-            <div className="flex justify-center gap-8 pt-6 border-t border-blue-100">
+            <div className="flex justify-center gap-8 pt-6 border-t border-purple-100">
                 <div className="text-center">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-md">
+                    <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
                         <svg
                             className="w-6 h-6 text-white"
                             fill="none"
@@ -249,14 +249,14 @@ const TodoList: React.FC = () => {
                             />
                         </svg>
                     </div>
-                    <p className="text-sm font-semibold text-green-600">
+                    <p className="text-sm font-semibold text-emerald-600">
                         {completedTodos}
                     </p>
-                    <p className="text-xs text-blue-500">เสร็จแล้ว</p>
+                    <p className="text-xs text-purple-500">เสร็จแล้ว</p>
                 </div>
 
                 <div className="text-center">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-md">
+                    <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
                         <svg
                             className="w-6 h-6 text-white"
                             fill="none"
@@ -271,14 +271,14 @@ const TodoList: React.FC = () => {
                             />
                         </svg>
                     </div>
-                    <p className="text-sm font-semibold text-orange-600">
+                    <p className="text-sm font-semibold text-rose-600">
                         {totalTodos - completedTodos}
                     </p>
-                    <p className="text-xs text-blue-500">รอดำเนินการ</p>
+                    <p className="text-xs text-purple-500">รอดำเนินการ</p>
                 </div>
 
                 <div className="text-center">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-md">
+                    <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
                         <svg
                             className="w-6 h-6 text-white"
                             fill="none"
@@ -293,10 +293,10 @@ const TodoList: React.FC = () => {
                             />
                         </svg>
                     </div>
-                    <p className="text-sm font-semibold text-blue-600">
+                    <p className="text-sm font-semibold text-indigo-600">
                         {totalTodos}
                     </p>
-                    <p className="text-xs text-blue-500">ทั้งหมด</p>
+                    <p className="text-xs text-purple-500">ทั้งหมด</p>
                 </div>
             </div>
         </div>
