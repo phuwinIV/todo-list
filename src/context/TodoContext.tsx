@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { todoApi, type CreateTodoRequest } from '../services/todoService';
@@ -6,8 +6,11 @@ import { type Todo, mapApiTodoToTodo } from '../utils/todoHelpers';
 
 export interface TodoContextType {
     todos: Todo[];
+    filteredTodos: Todo[];
     isLoading: boolean;
     error: string | null;
+    searchTerm: string;
+    setSearchTerm: (term: string) => void;
     addTodo: (text: string) => Promise<void>;
     updateTodo: (id: number, updates: Partial<Todo>) => Promise<void>;
     deleteTodo: (id: number) => Promise<void>;
@@ -23,6 +26,7 @@ interface TodoProviderProps {
 
 export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     const queryClient = useQueryClient();
+    const [searchTerm, setSearchTerm] = useState('');
 
     const {
         data: todos = [],
@@ -35,6 +39,15 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
             return apiTodos.map(mapApiTodoToTodo);
         },
     });
+
+    const filteredTodos = useMemo(() => {
+        if (!searchTerm.trim()) {
+            return todos;
+        }
+        return todos.filter(todo =>
+            todo.text.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [todos, searchTerm]);
 
     const addTodoMutation = useMutation({
         mutationFn: (newTodo: CreateTodoRequest) => todoApi.createTodo(newTodo),
@@ -84,8 +97,11 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
 
     const value = {
         todos,
+        filteredTodos,
         isLoading,
         error: error?.message || null,
+        searchTerm,
+        setSearchTerm,
         addTodo,
         updateTodo,
         deleteTodo,
