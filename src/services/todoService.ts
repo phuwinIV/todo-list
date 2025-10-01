@@ -12,8 +12,10 @@ export interface CreateTodoRequest {
 const API_BASE = 'https://jsonplaceholder.typicode.com';
 
 const api = {
-    async fetchTodos(): Promise<ApiTodo[]> {
-        const response = await fetch(`${API_BASE}/todos?_limit=10`);
+    async fetchTodos(page = 1, limit = 10): Promise<ApiTodo[]> {
+        const response = await fetch(
+            `${API_BASE}/todos?_page=${page}&_limit=${limit}`
+        );
         if (!response.ok) {
             throw new Error('Failed to fetch todos');
         }
@@ -28,7 +30,6 @@ const api = {
             },
             body: JSON.stringify({
                 title: newTodo.title,
-                completed: newTodo.completed || false,
             }),
         });
         if (!response.ok) {

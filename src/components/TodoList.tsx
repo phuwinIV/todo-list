@@ -1,12 +1,43 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTodoContext } from '../hooks/useTodoContext';
 import TodoItem from './TodoItem';
 import AddTodo from './AddTodo';
 import SearchFilter from './SearchFilter';
 
 const TodoList: React.FC = () => {
-    const { todos, filteredTodos, isLoading, error, searchTerm } =
-        useTodoContext();
+    const {
+        todos,
+        filteredTodos,
+        isLoading,
+        error,
+        searchTerm,
+        isFetchingNextPage,
+        hasNextPage,
+        fetchNextPage,
+    } = useTodoContext();
+
+    const observerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries[0].isIntersecting &&
+                    hasNextPage &&
+                    !isFetchingNextPage
+                ) {
+                    fetchNextPage();
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (isLoading) {
         return (
@@ -187,52 +218,8 @@ const TodoList: React.FC = () => {
                 </div>
             </div>
 
-            {/* Todo Items */}
-            <div className="space-y-4">
-                {filteredTodos.length === 0 && searchTerm ? (
-                    <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 shadow-inner">
-                        <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <svg
-                                className="w-8 h-8 text-gray-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                />
-                            </svg>
-                        </div>
-                        <div className="text-gray-600 text-xl font-semibold mb-2">
-                            ไม่พบรายการ
-                        </div>
-                        <div className="text-gray-500 text-lg">
-                            ไม่มีรายการที่ตรงกับ "{searchTerm}"
-                        </div>
-                    </div>
-                ) : (
-                    <div className="grid gap-4">
-                        {filteredTodos.map((todo, index) => (
-                            <div
-                                key={todo.id}
-                                className="transform transition-all duration-300 hover:scale-[1.02] animate-fade-in"
-                                style={{
-                                    animationDelay: `${index * 100}ms`,
-                                    animationFillMode: 'both',
-                                }}
-                            >
-                                <TodoItem todo={todo} />
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Stats Footer */}
-            <div className="flex justify-center gap-8 pt-6 border-t border-purple-100">
+            {/* Stats  */}
+            <div className="flex justify-center gap-8 py-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-gray-100/50 shadow-sm">
                 <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg">
                         <svg
@@ -298,6 +285,80 @@ const TodoList: React.FC = () => {
                     </p>
                     <p className="text-xs text-purple-500">ทั้งหมด</p>
                 </div>
+            </div>
+
+            {/* Todo Items */}
+            <div className="space-y-4">
+                {filteredTodos.length === 0 && searchTerm ? (
+                    <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 shadow-inner">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg
+                                className="w-8 h-8 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </div>
+                        <div className="text-gray-600 text-xl font-semibold mb-2">
+                            ไม่พบรายการ
+                        </div>
+                        <div className="text-gray-500 text-lg">
+                            ไม่มีรายการที่ตรงกับ "{searchTerm}"
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid gap-4">
+                        {filteredTodos.map((todo, index) => (
+                            <div
+                                key={todo.id}
+                                className="transform transition-all duration-300 hover:scale-[1.02] animate-fade-in"
+                                style={{
+                                    animationDelay: `${index * 100}ms`,
+                                    animationFillMode: 'both',
+                                }}
+                            >
+                                <TodoItem todo={todo} />
+                            </div>
+                        ))}
+
+                        {/* Infinite scroll trigger */}
+                        {hasNextPage && (
+                            <div ref={observerRef} className="h-4" />
+                        )}
+
+                        {/* Loading more indicator */}
+                        {isFetchingNextPage && (
+                            <div className="text-center py-8">
+                                <div className="inline-flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-50/80 via-indigo-50/80 to-purple-50/80 backdrop-blur-sm rounded-2xl border border-blue-100/50 shadow-md">
+                                    <div className="flex gap-1">
+                                        <div
+                                            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-bounce"
+                                            style={{ animationDelay: '0ms' }}
+                                        ></div>
+                                        <div
+                                            className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full animate-bounce"
+                                            style={{ animationDelay: '150ms' }}
+                                        ></div>
+                                        <div
+                                            className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce"
+                                            style={{ animationDelay: '300ms' }}
+                                        ></div>
+                                    </div>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 font-medium text-sm tracking-wide">
+                                        กำลังโหลดเพิ่มเติม...
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
