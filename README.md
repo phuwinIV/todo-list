@@ -1,24 +1,28 @@
 # 📝 Modern Todo Application
 
-A beautiful, modern Todo application built with React 19, TypeScript, and Tailwind CSS. This application demonstrates modern frontend development practices with a clean architecture and excellent user experience.
+A beautiful, modern Todo application built with React 19, TypeScript, and Tailwind CSS. This application demonstrates modern frontend development practices with infinite scrolling, real-time search, and excellent user experience.
 
 ## ✨ Features
 
 ### Core Functionality
 - ✅ **Add, Edit, Delete Todos** - Complete CRUD operations
-- 🔍 **Real-time Search** - Filter todos as you type
-- 📊 **Progress Tracking** - Visual progress bar and statistics
+- 🔍 **Real-time Search** - Filter todos as you type with instant results
+- 📊 **Progress Tracking** - Visual progress bar and statistics dashboard
+- ♾️ **Infinite Scrolling** - Load more todos automatically as you scroll
 - 🎨 **Beautiful UI** - Modern, responsive design with smooth animations
-- ⚡ **Fast Performance** - Optimized with React Query caching
+- ⚡ **Fast Performance** - Optimized with React Query caching and pagination
 - 📱 **Mobile Responsive** - Works perfectly on all devices
+- 🌏 **Thai Language Support** - Full Thai language interface
 
 ### Technical Features
 - 🔄 **Server State Management** - React Query for data fetching and caching
 - 🌐 **REST API Integration** - JSONPlaceholder API for demo data
 - 🎯 **TypeScript** - Full type safety throughout the application
-- 🎨 **Tailwind CSS** - Modern styling with utility classes
-- 🔧 **Context API** - Centralized state management
+- 🎨 **Tailwind CSS** - Modern styling with utility classes and custom animations
+- 🔧 **Context API + React Query** - Hybrid state management approach
 - ⚠️ **Error Handling** - Comprehensive error states and loading indicators
+- 🔄 **Optimistic Updates** - Immediate UI feedback with server synchronization
+- 👁️ **Intersection Observer** - Efficient infinite scroll implementation
 
 ## 🚀 Quick Start
 
@@ -63,19 +67,20 @@ src/
 ├── components/          # Reusable UI components
 │   ├── AddTodo.tsx     # Todo creation form
 │   ├── TodoItem.tsx    # Individual todo item
-│   ├── TodoList.tsx    # Main todo list container
-│   └── SearchFilter.tsx # Search functionality
+│   ├── TodoList.tsx    # Main todo list container with infinite scroll
+│   └── SearchFilter.tsx # Real-time search functionality
 ├── context/            # React Context providers
-│   └── todoContext.tsx # Todo state management
+│   ├── TodoContext.ts  # Todo context type definitions
+│   └── TodoProvider.tsx # Todo state management with React Query
 ├── hooks/              # Custom React hooks
 │   └── useTodoContext.tsx # Hook for accessing todo context
 ├── pages/              # Page components
 │   └── HomePage.tsx    # Main page component
 ├── services/           # API services
-│   └── todoService.ts  # Todo API operations
+│   └── todoService.ts  # Todo API operations with pagination
 ├── utils/              # Utility functions
 │   └── todoHelpers.ts  # Todo data transformations
-├── App.tsx             # Main application component
+├── App.tsx             # Main application component with routing
 └── main.tsx           # Application entry point
 ```
 
@@ -87,14 +92,16 @@ src/
 
 We chose a hybrid approach combining React Query for server state and Context API for client state:
 
-- **React Query** manages server-side data (todos from API)
+- **React Query with Infinite Queries** manages server-side data (todos from API)
   - Automatic caching and background refetching
+  - Infinite scrolling with pagination support
   - Optimistic updates for better UX
   - Built-in loading and error states
   - Reduces boilerplate code significantly
 
 - **Context API** manages client-side state (search filters, UI state)
   - Lightweight for simple client state
+  - Real-time search functionality
   - No additional dependencies
   - Easy to understand and maintain
 
@@ -103,10 +110,10 @@ We chose a hybrid approach combining React Query for server state and Context AP
 **Single Responsibility Principle**
 Each component has a clear, single purpose:
 
-- `TodoList` - Container and layout logic
+- `TodoList` - Container, layout logic, and infinite scroll management
 - `TodoItem` - Individual todo display and interactions  
-- `AddTodo` - Todo creation form logic
-- `SearchFilter` - Search functionality
+- `AddTodo` - Todo creation form logic with optimistic updates
+- `SearchFilter` - Real-time search functionality
 
 **Composition over Inheritance**
 Components are designed to be composed together, making them reusable and testable.
@@ -116,13 +123,13 @@ Components are designed to be composed together, making them reusable and testab
 ```
 API (JSONPlaceholder) 
     ↓
-TodoService (API abstraction)
+TodoService (API abstraction with pagination)
     ↓  
-React Query (Server state)
+React Query Infinite Queries (Server state + caching)
     ↓
-TodoContext (State distribution)
+TodoProvider (State distribution + search logic)
     ↓
-Components (UI rendering)
+Components (UI rendering + infinite scroll)
 ```
 
 ### TypeScript Integration
@@ -143,18 +150,21 @@ Components (UI rendering)
 
 ### Performance Optimizations
 
-1. **React Query Caching** - Intelligent data caching reduces API calls
-2. **useMemo for Filtering** - Prevents unnecessary recalculations
-3. **Component Composition** - Reduces prop drilling
-4. **Optimistic Updates** - UI updates immediately, syncs with server later
+1. **React Query Infinite Caching** - Intelligent data caching with pagination reduces API calls
+2. **useMemo for Filtering** - Prevents unnecessary recalculations during search
+3. **Intersection Observer** - Efficient infinite scroll implementation
+4. **Component Composition** - Reduces prop drilling
+5. **Optimistic Updates** - UI updates immediately, syncs with server later
+6. **Lazy Loading** - Load todos on demand as user scrolls
 
 ### Error Handling Strategy
 
 **Graceful Degradation**
-- Loading states with skeleton UI
+- Loading states with beautiful skeleton UI and Thai language support
 - Error boundaries for unexpected failures
-- User-friendly error messages
+- User-friendly error messages in Thai
 - Retry functionality where appropriate
+- Empty states with helpful guidance
 
 ### Accessibility Considerations
 
@@ -170,10 +180,11 @@ Components (UI rendering)
 |------------|---------|------------|
 | **React 19** | UI Framework | Latest features, excellent performance |
 | **TypeScript** | Type Safety | Better developer experience, fewer runtime errors |
-| **Tailwind CSS** | Styling | Rapid development, consistent design |
-| **React Query** | Data Fetching | Powerful caching, optimistic updates |
+| **Tailwind CSS** | Styling | Rapid development, consistent design, custom animations |
+| **React Query** | Data Fetching | Powerful caching, infinite queries, optimistic updates |
 | **Vite** | Build Tool | Fast development server, optimized builds |
-| **React Router** | Routing | Standard React routing solution |
+| **React Router DOM** | Routing | Standard React routing solution |
+| **Intersection Observer API** | Infinite Scroll | Native browser API for efficient scroll detection |
 
 ## 🔮 Future Enhancements
 
